@@ -7,18 +7,20 @@ builder.init(process.env.REACT_APP_BUILDER_API_KEY);
 export default function Page({ pathname }) {
   const [pageContent, setPageContent] = React.useState(null);
   const [error, setError] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     builder.get('page', { url: pathname }).promise()
       .then(setPageContent)
       .catch(setError)
+      .finally(() => setLoading(false));
   }, [pathname]);
 
   if (error) {
     return error.message;
   }
 
-  if (!pageContent && !error) {
+  if (loading) {
     return <GridLoader />;
   }
 
